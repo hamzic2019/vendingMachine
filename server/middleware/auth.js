@@ -13,22 +13,28 @@ const auth = async (req, res, next) => {
         req.logged = false;
         next();
     }else {
-        // Remove the 'Bearer ' prefix from the token
-        token = token.replace('Bearer ', '');
+        try {
+            // Remove the 'Bearer ' prefix from the token
+            token = token.replace('Bearer ', '');
 
-        // Verify the token
-        const isValid = jwt.verify(token, `${process.env.jwtSecret}`)
-        
-        // Find the user with the same id as the token payload
-        const user = await User.findOne({_id: isValid._id});
+            // Verify the token
+            const isValid = jwt.verify(token, `${process.env.jwtSecret}`)
+            
+            // Find the user with the same id as the token payload
+            const user = await User.findOne({_id: isValid._id});
 
-         // Set the user, token, and logged value on the request object
-        req.user = user;
-        req.token = token; 
-        req.logged = true;
+            // Set the user, token, and logged value on the request object
+            req.user = user;
+            req.token = token; 
+            req.logged = true;
 
-        // Call the next middleware function
-        next();
+            // Call the next middleware function
+            next();
+        }catch(e) {
+            console.log('TU SAM');
+            req.error = true;
+            next();
+        }
     }
 }
 

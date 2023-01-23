@@ -17,6 +17,7 @@ let passwordSchema = new passwordValidator();
     .is().not().oneOf(['Passw0rd', 'Password123', '123456789']); // More to be added to list
 
 
+    // role field is missing!!
 const userSchema = new Schema({
     username :{
         type: String,
@@ -40,7 +41,7 @@ const userSchema = new Schema({
                 type: String,
                 required: true
             }
-        }]
+    }]
 });
 
 userSchema.methods.toJSON = function() {
