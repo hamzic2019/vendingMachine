@@ -36,6 +36,17 @@ const userSchema = new Schema({
     deposit: {
         type: Number
     },
+    role: {
+        type: String,
+        required: true,
+        validate: (name) => {
+            if(name === 'buyer' || name === 'seller'){
+                return true
+            }else {
+                return false;
+            }
+        }
+    },
     tokens: [{
             token: {
                 type: String,
