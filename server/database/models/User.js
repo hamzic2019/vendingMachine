@@ -1,7 +1,8 @@
 const {Schema, model} = require('mongoose');
 const jwt = require('jsonwebtoken');
-const bcryptjs = require('bcryptjs');
+const bcrypt = require('bcryptjs');
 const validator = require('validator'); // later to be remove or to validate emails
+const dotenv = require('dotenv').config()
 
 let passwordValidator = require('password-validator');
 let passwordSchema = new passwordValidator();
@@ -15,8 +16,6 @@ let passwordSchema = new passwordValidator();
     .has().not().spaces()                           // Should not have spaces
     .is().not().oneOf(['Passw0rd', 'Password123', '123456789']); // More to be added to list
 
-
-console.log(passwordSchema.validate('haris253Sgdhf*'))
 
 const userSchema = new Schema({
     username :{
@@ -35,7 +34,40 @@ const userSchema = new Schema({
     },
     deposit: {
         type: Number
-    }
+    },
+    tokens: [{
+            token: {
+                type: String,
+                required: true
+            }
+        }]
+});
+
+userSchema.methods.toJSON = function() {
+    const userObject = this.toObject();
+
+    delete userObject.password;
+    delete userObject.__v;
+
+    return userObject;
+}
+
+userSchema.methods.makeToken = function() {
+    const user = this;
+
+    const token = jwt.sign({_id: user._id.toString()}, `${process.env.jwtSecret}`)
+
+    user.tokens = user.tokens.concat({token});
+
+    return token;
+}
+
+userSchema.pre('save', async function(next) { 
+    const user = this; 
+    if(user.isModified('password')){ 
+        user.password = await bcrypt.hash(user.password, 8); 
+    } 
+    next(); 
 });
 
 

@@ -17,11 +17,11 @@ router.post('/', async(req, res) => {
         
 
         const user = new User(req.body); // Create a new User object with the request body
-
+        const token = user.makeToken();  // Generating JWT for AUTH
         await user.save(); // Save the User object to the database
-        
 
-        res.status(201).send({user}); // Send a 201 response with the new user object
+
+        res.status(201).send({user, token}); // Send a 201 response with the new user object
     }catch(e) {
         // Send a 400 response with the error message if an error is caught
         res.status(400).send({e});
