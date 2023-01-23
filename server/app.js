@@ -21,6 +21,11 @@ app.set('views', path.join(__dirname, './templates/views'));
 // registering handlebars partials
 hbs.registerPartials(path.join(__dirname, './templates/partials'));
 
+// Importing routes
+const userRoute = require('./routes/user-routes');
+
+app.use('users', userRoute);
+
 // starting the server and logging a message on success
 app.listen(PORT, () => {
     console.log(`Application is up and running on port ${PORT}!`);
