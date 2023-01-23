@@ -6,6 +6,7 @@ const dotenv = require('dotenv').config();
 const auth = async (req, res, next) => {
     // Get the token from the headers
     let token = req.headers["authorization"] //.replace('Bearer ', '');
+
     
     // Check if the token is undefined
     if(token === undefined){
@@ -16,7 +17,7 @@ const auth = async (req, res, next) => {
         token = token.replace('Bearer ', '');
 
         // Verify the token
-        const isValid = jwt.verify(token, `${process.env.TOKEN_SECRET}`)
+        const isValid = jwt.verify(token, `${process.env.jwtSecret}`)
         
         // Find the user with the same id as the token payload
         const user = await User.findOne({_id: isValid._id});

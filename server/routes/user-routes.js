@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('./../database/models/User');
+const auth = require('./../middleware/auth');
 
 
 router.post('/', async(req, res) => {
@@ -29,6 +30,50 @@ router.post('/', async(req, res) => {
 });
 
 
+router.post('/login', async(req, res) => {
+    try {
+        const options = Object.keys(req.body); // Extract the keys from the request body
 
+        const allowed = ["username", "password"]; // Define the allowed keys
+
+        // Check if every key in options is present in allowed
+        const isValid = options.every(item => allowed.includes(item));
+
+        // If not, throw an error
+        if(!isValid) throw 'Error: Only "username" and "password" keys are allowed in the request body';
+        
+        const user = await User.findByCredentials(req.body.username, req.body.password);
+        const token = user.makeToken();
+        await user.save(); // saving token from new log in
+
+        res.status(200).send({user, token});
+
+    }catch(e) {
+        // Send a 400 response with the error message if an error is caught
+        res.status(400).send({e});
+    }
+});
+
+
+// Allows logged-in users to log out of their session.
+router.post('/logout',auth ,async(req, res) => {
+    try {
+        // Check if the user is logged in
+        if(req.user === undefined) throw 'You are not logged in to take this action'
+
+        // Remove the token from the user's tokens array
+        req.user.tokens = req.user.tokens.filter((item) => item.token !== req.token)
+
+        // Save the user's updated tokens array
+        await req.user.save();
+
+        // Send a 200 OK response with the updated user object
+        res.status(200).send({user: req.user});
+        
+    }catch(e) {
+        // Send a 400 Bad Request response with the error message if an error is caught
+        res.status(400).send({e});
+    }
+})
 
 module.exports = router;

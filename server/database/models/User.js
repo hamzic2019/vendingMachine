@@ -71,6 +71,17 @@ userSchema.pre('save', async function(next) {
 });
 
 
+userSchema.statics.findByCredentials = async function(username, password){
+    const user = await User.findOne({username});
+    if(user === null) throw 'No user found!';
+
+    const isValidPw = await bcrypt.compare(password, user.password);
+    if(!isValidPw) throw 'Wrong password';
+
+    return user;
+}
+
+
 const User = model('User', userSchema);
 
 
