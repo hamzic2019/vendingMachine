@@ -8,7 +8,7 @@ router.post('/', async(req, res) => {
     try {
         const options = Object.keys(req.body); // Extract the keys from the request body
 
-        const allowed = ["username", "password"]; // Define the allowed keys
+        const allowed = ["username", "password", "deposit", "role"]; // Define the allowed keys
 
         // Check if every key in options is present in allowed
         const isValid = options.every(item => allowed.includes(item));
@@ -110,7 +110,7 @@ router.put('/profile', auth, async(req, res) => {
 
         const options = Object.keys(req.body); // Extract the keys from the request body
 
-        const allowed = ["username", "password", "deposit"]; // Define the allowed keys
+        const allowed = ["username", "password", "deposit", "role"]; // Define the allowed keys
 
         // Check if every key in options is present in allowed
         const isValid = options.every(item => allowed.includes(item));
@@ -132,6 +132,18 @@ router.put('/profile', auth, async(req, res) => {
         res.status(400).send({e});
     }
 })
+
+router.delete('/profile',auth ,async(req, res) => {
+    try {
+        await req.user.remove();
+        
+        res.status(200).send({message: 'User is deleted!'});
+    }catch(e) {
+        // Send a 400 Bad Request response with the error message if an error is caught
+        res.status(400).send({e});
+    }
+})
+
 
 
 module.exports = router;
