@@ -76,4 +76,22 @@ router.post('/logout',auth ,async(req, res) => {
     }
 })
 
+// Allows logged-in users to log out all sessions.
+router.post('/logout/all',auth ,async(req, res) => {
+    try {
+        // Check if the user is logged in
+        if(req.user === undefined) throw 'You are not logged in to take this action'
+
+        req.user.tokens = []; // Set the user's tokens array to be empty
+        await req.user.save(); // Save the user's updated tokens array
+
+        res.status(200).send({message: 'You have logged out from all active sessions.'})
+
+    }catch(e) {
+        // Send a 400 Bad Request response with the error message if an error is caught
+        res.status(400).send({e});
+    }
+})
+
+
 module.exports = router;
