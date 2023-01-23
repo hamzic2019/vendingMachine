@@ -34,8 +34,7 @@ const userSchema = new Schema({
         }
     },
     deposit: {
-        type: Number,
-        required: true
+        type: Number
     }
 });
 
