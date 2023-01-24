@@ -1,4 +1,4 @@
-const {Schema, model} = require('mongoose');
+const {Schema, model, default: mongoose} = require('mongoose');
 
 
 const productSchema = new Schema({
@@ -8,6 +8,21 @@ const productSchema = new Schema({
         validate: (number) => {
             if(!Number.isInteger(number)) false;
         }
+    },
+    cost: {
+        type: Number,
+        required: true
+    },
+    productName: {
+        type: String,
+        trim: true,
+        required: true,
+        unique: true // it makes no sanse to have 2 times same product
+    },
+    sellerId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
     }
 });
 

@@ -31,7 +31,6 @@ const auth = async (req, res, next) => {
             // Call the next middleware function
             next();
         }catch(e) {
-            console.log('TU SAM');
             req.error = true;
             next();
         }

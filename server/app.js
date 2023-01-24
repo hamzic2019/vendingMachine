@@ -22,9 +22,11 @@ app.set('views', path.join(__dirname, './templates/views'));
 hbs.registerPartials(path.join(__dirname, './templates/partials'));
 
 // Importing routes
-const userRoute = require('./routes/user-routes');
+const userRoutes = require('./routes/user-routes');
+const productRoutes = require('./routes/product-routes');
 
-app.use('/users', userRoute);
+app.use('/users', userRoutes);
+app.use('/products', productRoutes);
 
 // starting the server and logging a message on success
 app.listen(PORT, () => {
