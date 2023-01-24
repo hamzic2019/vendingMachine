@@ -17,6 +17,7 @@ router.get('/', async(req, res) => {
 router.post('/',auth ,async(req, res) => {
     try {
         if(req.error) throw 'You are not logged in!';
+        if(req.user.role !== 'seller') throw 'Sorry but you are not allowed';
 
         const options = Object.keys(req.body);
         const allowed = ["productName", "cost", "amountAvailable"];
@@ -43,6 +44,7 @@ router.post('/',auth ,async(req, res) => {
 router.put('/:id',auth , async(req, res) => {
     try {
         if(req.error) throw 'You are not logged in!';
+        if(req.user.role !== 'seller') throw 'Sorry but you are not allowed';
 
         const id = req.params.id;
         const options = Object.keys(req.body);
@@ -67,6 +69,24 @@ router.put('/:id',auth , async(req, res) => {
     }
 });
 
+router.delete('/:id',auth ,async(req, res) => {
+    try {
+        if(req.error) throw 'You are not logged in!';
+        if(req.user.role !== 'seller') throw 'Sorry but you are not allowed';
+
+        const id = req.params.id;
+        const product = await Product.findOneAndDelete({_id: id, sellerId: req.user._id});
+
+        if(product === null) throw `There is no product associated to this ID: ${id}`
+
+        res.status(200).send({product});
+
+
+    }catch(e) {
+        // Send a 400 response with the error message if an error is caught
+        res.status(400).send({e});
+    }
+});
 
 
 module.exports = router;
