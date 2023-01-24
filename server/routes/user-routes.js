@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('./../database/models/User');
+const Product = require('./../database/models/Product');
 const auth = require('./../middleware/auth');
 
 
@@ -144,6 +145,82 @@ router.delete('/profile',auth ,async(req, res) => {
     }
 })
 
+
+
+router.post('/deposit',auth ,async(req, res) =>{
+    try {
+        if(req.error) throw 'You are not logged in!';
+        if(req.user.role !== 'buyer') throw 'Sorry but you have to be buyer to deposit money!';
+
+        const options = Object.keys(req.body);
+        const allowed = ['deposit'];
+        const isAllowed = options.every((option) => allowed.includes(option));
+
+        if(!isAllowed) throw 'Sorry you are not allowed to edit that!';
+
+        const validNumbers = [5,10,20,50,100];
+        const isValid = validNumbers.includes(req.body.deposit);
+
+        if(!isValid) throw 'Sorry you can only deposit 5, 10, 20, 50 & 100'; 
+        
+        req.user.deposit = req.user.deposit + req.body.deposit;
+
+        await req.user.save();
+
+        res.status(200).send({msg: `You have deposited ${req.body.deposit} coins, your new balance is: ${req.user.deposit}`})
+
+    }catch(e) {
+        // Send a 400 Bad Request response with the error message if an error is caught
+        res.status(400).send({e});
+    }
+});
+
+router.post('/reset',auth,  async(req, res) => {
+    try {
+        if(req.error) throw 'You are not logged in!';
+        if(req.user.role !== 'buyer') throw 'Sorry but you have to be buyer!';
+
+        req.user.deposit = 0;
+
+        await req.user.save();
+
+        res.status(200).send({msg: 'You have successfully reseted your balance to 0'})
+
+    }catch(e) {
+        // Send a 400 Bad Request response with the error message if an error is caught
+        res.status(400).send({e});
+    }
+});
+
+
+router.post('/buy/:id' ,auth ,async(req, res) => {
+    try {
+        if(req.error) throw 'You are not logged in!';
+        if(req.user.role !== 'buyer') throw 'Sorry but you have to be buyer!';
+
+        const productId = req.params.id
+
+        const product = await Product.findById(productId);
+
+        if(product.amountAvailable < 1) throw 'Sorry but there is no more available on stock!';
+
+        if(req.user.deposit < product.cost) throw `${product.productName} cost $${product.cost} and your avialable balance is $${req.user.deposit}`;
+        
+        
+        product.amountAvailable = product.amountAvailable - 1;
+        req.user.deposit = req.user.deposit - product.cost;
+
+        await product.save();
+        await req.user.save();
+
+
+        res.status(200).send({product, user: req.user});
+
+    }catch(e) {
+        // Send a 400 Bad Request response with the error message if an error is caught
+        res.status(400).send({e});
+    }
+});
 
 
 module.exports = router;

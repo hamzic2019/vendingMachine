@@ -34,7 +34,8 @@ const userSchema = new Schema({
         }
     },
     deposit: {
-        type: Number
+        type: Number,
+        default: 0
     },
     role: {
         type: String,
@@ -60,6 +61,7 @@ userSchema.methods.toJSON = function() {
 
     delete userObject.password;
     delete userObject.__v;
+    
 
     return userObject;
 }
