@@ -1,0 +1,26 @@
+.keyButtonWrapper {
+    background-color: rgba(0, 255, 81, 0.226);
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.35);
+    width: 30%;
+    height: 20%;
+    margin: 5px;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 10px;
+}
+
+
+.keyButtonWrapper:hover {
+    background-color: rgba(1, 209, 67, 0.426);
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.35);
+    cursor: pointer;
+}
+
+.keyButtonWrapper:active {
+    background-color: rgba(0, 137, 43, 0.426);
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.35);
+    cursor: pointer;
+}

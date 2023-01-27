@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Silkscreen&display=swap');
+
+.displayWrapper {
+    background-color: #32D401;
+    border:5px solid gray;
+    border-radius: 10px;
+    height: 100px;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+.displayWrapper h1 {
+    font-family: 'Silkscreen', cursive;
+    font-size: 20px;
+}

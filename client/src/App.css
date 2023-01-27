@@ -1,0 +1,17 @@
+.appWrapper {
+    background-color: white;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.452);
+
+    border-radius: 10px;
+
+    width: 95%;
+    height: 90vh;
+
+    display: flex;
+    margin: 5vh auto;
+
+    padding: 0.5%;
+
+    /* transform-origin: 110% 0%;
+    scale: 1.5; */
+}
